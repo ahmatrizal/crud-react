@@ -26,17 +26,37 @@ export class CRUD extends Component {
 
     handleSubmit = (e) => {
         e.preventDefault()
-        this.setState({
-            makanans: [
-                ...this.state.makanans,
-                {
-                    id : this.state.makanans + 1,
-                    nama : this.state.nama,
-                    harga : this.state.harga,
-                    deskripsi : this.state.deskripsi
-                }
-            ]
-        })
+        if (this.state.id === ''){
+            this.setState({
+                makanans: [
+                    ...this.state.makanans,
+                    {
+                        id : this.state.makanans + 1,
+                        nama : this.state.nama,
+                        harga : this.state.harga,
+                        deskripsi : this.state.deskripsi
+                    }
+                ]
+            })
+        } else {
+            const makananYangTidakDipilih = this.state.makanans
+            .filter((makanan) => makanan.id !== this.state.id)
+            .map((filterMakanan) => { 
+                return filterMakanan
+            })
+            this.setState({
+                makanans: [
+                    ...makananYangTidakDipilih,
+                    {
+                        id : this.state.makanans + 1,
+                        nama : this.state.nama,
+                        harga : this.state.harga,
+                        deskripsi : this.state.deskripsi
+                    }
+                ]
+            })
+            }
+
 
         this.setState({
             nama : '',
@@ -45,12 +65,29 @@ export class CRUD extends Component {
             id : ''
         })
     }
+
+    editData = (id) => {
+        const makananYangDipilih = this.state.makanans
+        .filter((makanan) => makanan.id === id)
+        .map((filterMakanan) => { 
+            return filterMakanan
+        })
+
+        this.setState({
+            nama: makananYangDipilih[0].nama,
+            harga: makananYangDipilih[0].harga,
+            deskripsi: makananYangDipilih[0].deskripsi,
+            id: makananYangDipilih[0].id
+        })
+
+    }
+
     render() {
     return (
         <div>
             <Navbar />
             <div className="container mt-4">
-                <Table makanans={this.state.makanans} />
+                <Table makanans={this.state.makanans} editData={this.editData}/>
                 <Folmulir {...this.state} handleChange={this.handleChange} handleSubmit={this.handleSubmit} />
             </div>
         </div>
